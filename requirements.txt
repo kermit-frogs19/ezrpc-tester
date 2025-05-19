@@ -1,0 +1,1 @@
+ezRPC @ git+https://github.com/kermit-frogs19/ezRPC.git@main
