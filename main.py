@@ -1,6 +1,9 @@
 from ezRPC import Producer
 import asyncio
 import time
+import grpc
+import ping_pb2
+import ping_pb2_grpc
 
 
 try:
@@ -30,21 +33,26 @@ async def main():
     # initial test
     for i in range(batches_amount):
         print(f"\n\nStarting batch #{i+1}")
-        client = Producer("https://nyc3.vadim-seliukov-quic-server.com:8000", use_tls=False)
+        channel = grpc.insecure_channel("nyc3.vadim-seliukov-quic-server.com:50051")
+        stub = ping_pb2_grpc.PingerStub(channel)
+        # client = Producer("https://nyc3.vadim-seliukov-quic-server.com:8000", use_tls=False)
 
         for _ in range(5):
-            await client.call("dummy")
+            stub.Ping(ping_pb2.Empty())
+            # await client.call("dummy")
 
         # here the timer start
         start = time.perf_counter()
         for _ in range(batch_size):
-            await client.call("dummy")
+            stub.Ping(ping_pb2.Empty())
+            # await client.call("dummy")
         end = time.perf_counter()
         duration = end - start
         durations.append(duration)
         print(f"Batch {i+1}: {batch_size} requests took {duration:.6f} seconds. Average time per request: {duration / batch_size:.6f} seconds")     # here the timer end
 
-        await client.close()
+        channel.close()
+        # await client.close()
 
     print(f"\n[SUMMARY] {batches_amount} batches × {batch_size} requests")
     print(f"\n[SUMMARY] Collected results: {durations}")
