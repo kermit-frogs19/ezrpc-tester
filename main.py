@@ -3,6 +3,15 @@ import asyncio
 import time
 
 
+try:
+    import uvloop
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+    print("system: Using uvloop for asyncio event loop")
+except ImportError:
+    uvloop = None
+    print("system: Failed to import/connect uvloop for asyncio event loop")
+
+
 async def main():
     delay = 90
     batch_size = 100
