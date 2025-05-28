@@ -16,7 +16,7 @@ except ImportError:
 
 
 async def main():
-    delay = 0
+    delay = 30
     batch_size = 100
     batches_amount = 30
 
@@ -33,7 +33,7 @@ async def main():
     # initial test
     for i in range(batches_amount):
         print(f"\n\nStarting batch #{i+1}")
-        channel = grpc.insecure_channel("nyc3.seliukov.com.com:50051")
+        channel = grpc.insecure_channel("nyc3.seliukov.com:50051")
         stub = ping_pb2_grpc.PingerStub(channel)
         # client = Producer("https://nyc3.seliukov.com:8000", use_tls=False, timeout=None)
 
